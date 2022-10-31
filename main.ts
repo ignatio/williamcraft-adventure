@@ -13,6 +13,26 @@ function setupLevel () {
     spawnZombies()
     spawnLava()
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`flagRed`, function (sprite, location) {
+    if (info.score() < (currentLevel + 1) * 8) {
+        mySprite.sayText("I need more diamonds...", 1000, false)
+    } else {
+        tiles.setTileAt(tiles.getTileLocation(location.column, location.row), assets.tile`flagGreen`)
+        mySprite.sayText("I did it!", 3000, true)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Zombie, effects.spray, 500)
+        invulnerable = 1
+        music.powerUp.play()
+        timer.after(5000, function () {
+            if (currentLevel < 3) {
+                currentLevel += 1
+                nextLevel()
+            } else {
+                music.playMelody("C C - D A A G G ", 120)
+                youWin()
+            }
+        })
+    }
+})
 function spawnZombies () {
     for (let value of tiles.getTilesByType(assets.tile`myTile22`)) {
         zombieSprite = sprites.create(img`
@@ -82,26 +102,6 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile24`, function (sprite, location) {
-    if (info.score() < (currentLevel + 1) * 8) {
-        mySprite.sayText("I need more diamonds...", 1000, false)
-    } else {
-        tiles.setTileAt(tiles.getTileLocation(location.column, location.row), assets.tile`myTile2`)
-        mySprite.sayText("I did it!", 3000, true)
-        sprites.destroyAllSpritesOfKind(SpriteKind.Zombie, effects.spray, 500)
-        invulnerable = 1
-        music.powerUp.play()
-        timer.after(5000, function () {
-            if (currentLevel < 2) {
-                currentLevel += 1
-                nextLevel()
-            } else {
-                music.playMelody("C C - D A A G G ", 120)
-                youWin()
-            }
-        })
-    }
-})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
         music.footstep.play()
@@ -123,6 +123,18 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     200,
     true
     )
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
+    if (justTeleported == 0) {
+        timer.throttle("action", 2000, function () {
+            music.magicWand.playUntilDone()
+            justTeleported = 1
+            scene.setBackgroundColor(6)
+            tiles.placeOnTile(mySprite, tiles.getTilesByType(assets.tile`myTile2`)[0])
+            mySprite.y += 2
+            justTeleported = 0
+        })
+    }
 })
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     FacingRight = 1
@@ -234,13 +246,33 @@ function nextLevel () {
     } else if (currentLevel == 2) {
         scene.setBackgroundColor(14)
         tiles.setCurrentTilemap(tilemap`level2`)
-        effects.starField.startScreenEffect(10000)
+        effects.starField.startScreenEffect(900000)
         setupLevel()
         game.splash("Jump!", "Lava Burns!")
+    } else if (currentLevel == 3) {
+        scene.setBackgroundColor(6)
+        tiles.setCurrentTilemap(tilemap`level3`)
+        setupLevel()
+        game.splash("Climb on up!", "Find the Portal!")
+        effects.blizzard.startScreenEffect(100000)
     } else {
-    	
+        scene.setBackgroundColor(6)
+        tiles.setCurrentTilemap(tilemap`level6`)
+        setupLevel()
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
+    if (justTeleported == 0) {
+        timer.throttle("action", 2000, function () {
+            music.magicWand.playUntilDone()
+            justTeleported = 1
+            scene.setBackgroundColor(15)
+            tiles.placeOnTile(mySprite, tiles.getTilesByType(assets.tile`myTile3`)[0])
+            mySprite.y += 2
+        })
+        justTeleported = 0
+    }
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Zombie, function (sprite, otherSprite) {
     if (invulnerable == 0) {
         if (isAttacking == 0) {
@@ -293,7 +325,7 @@ function createPlayer () {
     mySprite.z = 5
 }
 function spawnLava () {
-    for (let value of tiles.getTilesByType(assets.tile`myTile`)) {
+    for (let value of tiles.getTilesByType(assets.tile`lavaTile`)) {
         lavablock = sprites.create(assets.image`myImage0`, SpriteKind.lavablock)
         tiles.placeOnTile(lavablock, value)
         tiles.setTileAt(value, assets.tile`transparency16`)
@@ -313,18 +345,19 @@ function youWin () {
 let lavablock: Sprite = null
 let playerStart: tiles.Location = null
 let diamond: Sprite = null
-let mySprite: Sprite = null
+let justTeleported = 0
 let FacingRight = 0
 let FacingLeft = 0
 let isAttacking = 0
 let zombieSprite: Sprite = null
+let mySprite: Sprite = null
 let currentLevel = 0
 let invincibleTimer = 0
 let invulnerable = 0
 info.setLife(10)
 invulnerable = 0
 invincibleTimer = 1000
-currentLevel = 0
+currentLevel = -1
 nextLevel()
 game.onUpdate(function () {
     scene.cameraFollowSprite(mySprite)
