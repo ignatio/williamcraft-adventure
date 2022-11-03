@@ -255,10 +255,13 @@ function nextLevel () {
         setupLevel()
         game.splash("Climb on up!", "Find the Portal!")
         effects.blizzard.startScreenEffect(100000)
-    } else {
+    } else if (currentLevel == 4) {
         scene.setBackgroundColor(6)
         tiles.setCurrentTilemap(tilemap`level6`)
         setupLevel()
+        game.splash("Diamonds grow on trees!", "Climb the branches!")
+    } else {
+    	
     }
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
@@ -357,7 +360,7 @@ let invulnerable = 0
 info.setLife(10)
 invulnerable = 0
 invincibleTimer = 1000
-currentLevel = -1
+currentLevel = 0
 nextLevel()
 game.onUpdate(function () {
     scene.cameraFollowSprite(mySprite)
