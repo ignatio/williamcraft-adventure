@@ -282,9 +282,6 @@ function nextLevel () {
     	
     }
 }
-function test () {
-	
-}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
     if (justTeleported == 0) {
         timer.throttle("action", 2000, function () {
