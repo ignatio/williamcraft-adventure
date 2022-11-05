@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const Zombie = SpriteKind.create()
     export const flag = SpriteKind.create()
     export const lavablock = SpriteKind.create()
+    export const heart = SpriteKind.create()
 }
 function setupLevel () {
     invulnerable = 0
@@ -23,7 +24,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`flagRed`, function (sprite, l
         invulnerable = 1
         music.powerUp.play()
         timer.after(5000, function () {
-            if (currentLevel < 3) {
+            if (currentLevel < 4) {
                 currentLevel += 1
                 nextLevel()
             } else {
@@ -102,6 +103,12 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.heart, function (sprite, otherSprite) {
+    music.baDing.play()
+    otherSprite.destroy(effects.trail, 200)
+    otherSprite.vy += -100
+    info.changeLifeBy(1)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
         music.footstep.play()
@@ -176,13 +183,18 @@ controller.left.onEvent(ControllerButtonEvent.Released, function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.lavablock, function (sprite, otherSprite) {
     if (invulnerable == 0) {
+        invulnerable = 1
         music.zapped.playUntilDone()
         mySprite.vy = 100
         mySprite.sayText("ARGH!!")
-        mySprite.destroy(effects.spray, 500)
         timer.after(500, function () {
-            game.splash("You Died.", "Lava Burns.")
-            game.reset()
+            info.changeLifeBy(-5)
+            if (info.life() >= 1) {
+                game.splash("You lost 5 hearts.", "Lava Burns.")
+                info.setScore(currentLevel * 8)
+                clearLevel()
+                nextLevel()
+            }
         })
     }
 })
@@ -244,7 +256,7 @@ function nextLevel () {
         setupLevel()
         game.splash("Explore the cave!", "The path can turn back!")
     } else if (currentLevel == 2) {
-        scene.setBackgroundColor(14)
+        scene.setBackgroundColor(15)
         tiles.setCurrentTilemap(tilemap`level2`)
         effects.starField.startScreenEffect(900000)
         setupLevel()
@@ -288,10 +300,18 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Zombie, function (sprite, otherS
             music.smallCrash.playUntilDone()
             otherSprite.vx = 0
             otherSprite.sayText("grr...")
+            heart = sprites.create(assets.image`myImage1`, SpriteKind.heart)
+            heart.setPosition(otherSprite.x, otherSprite.y)
             otherSprite.destroy(effects.spray, 500)
         }
     }
 })
+function clearLevel () {
+    sprites.destroyAllSpritesOfKind(SpriteKind.Zombie)
+    sprites.destroyAllSpritesOfKind(SpriteKind.diamond)
+    sprites.destroyAllSpritesOfKind(SpriteKind.heart)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+}
 function createPlayer () {
     mySprite = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -347,6 +367,7 @@ function youWin () {
 }
 let lavablock: Sprite = null
 let playerStart: tiles.Location = null
+let heart: Sprite = null
 let diamond: Sprite = null
 let justTeleported = 0
 let FacingRight = 0
