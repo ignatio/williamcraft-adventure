@@ -3,8 +3,6 @@ namespace SpriteKind {
     export const Zombie = SpriteKind.create()
     export const flag = SpriteKind.create()
     export const lavablock = SpriteKind.create()
-    export const sprite = SpriteKind.create()
-    export const heart = SpriteKind.create()
 }
 function setupLevel () {
     invulnerable = 0
@@ -15,7 +13,6 @@ function setupLevel () {
     spawnZombies()
     spawnLava()
 }
-// Touch the flag  
 scene.onOverlapTile(SpriteKind.Player, assets.tile`flagRed`, function (sprite, location) {
     if (info.score() < (currentLevel + 1) * 8) {
         mySprite.sayText("I need more diamonds...", 1000, false)
@@ -26,7 +23,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`flagRed`, function (sprite, l
         invulnerable = 1
         music.powerUp.play()
         timer.after(5000, function () {
-            if (currentLevel < totalLevels) {
+            if (currentLevel < 3) {
                 currentLevel += 1
                 nextLevel()
             } else {
@@ -105,12 +102,6 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
-sprites.onOverlap(SpriteKind.Player, SpriteKind.heart, function (sprite, otherSprite) {
-    music.baDing.play()
-    otherSprite.destroy(effects.trail, 200)
-    otherSprite.vy += -100
-    info.changeLifeBy(1)
-})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
         music.footstep.play()
@@ -133,7 +124,6 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
-// Teleportation Portals
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
     if (justTeleported == 0) {
         timer.throttle("action", 2000, function () {
@@ -186,19 +176,13 @@ controller.left.onEvent(ControllerButtonEvent.Released, function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.lavablock, function (sprite, otherSprite) {
     if (invulnerable == 0) {
-        invulnerable = 1
         music.zapped.playUntilDone()
         mySprite.vy = 100
         mySprite.sayText("ARGH!!")
+        mySprite.destroy(effects.spray, 500)
         timer.after(500, function () {
-            info.changeLifeBy(-5)
-            if (info.life() <= 0) {
-                game.over(false)
-            } else {
-                game.splash("You Lost 5 hearts!", "Lava Burns.")
-                sprites.destroyAllSpritesOfKind(SpriteKind.Zombie, effects.spray, 500)
-                nextLevel()
-            }
+            game.splash("You Died.", "Lava Burns.")
+            game.reset()
         })
     }
 })
@@ -249,12 +233,10 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 function nextLevel () {
     if (currentLevel == 0) {
         scene.setBackgroundColor(6)
-        scene.setBackgroundImage(assets.image`myImage1`)
         tiles.setCurrentTilemap(tilemap`level5`)
         effects.clouds.startScreenEffect(10000)
         setupLevel()
         game.splash("Collect the diamonds!", "Reach the Flag!")
-        music.startSong(assets.song`mySong0`, true)
     } else if (currentLevel == 1) {
         effects.clouds.endScreenEffect()
         scene.setBackgroundColor(15)
@@ -262,7 +244,7 @@ function nextLevel () {
         setupLevel()
         game.splash("Explore the cave!", "The path can turn back!")
     } else if (currentLevel == 2) {
-        scene.setBackgroundColor(15)
+        scene.setBackgroundColor(14)
         tiles.setCurrentTilemap(tilemap`level2`)
         effects.starField.startScreenEffect(900000)
         setupLevel()
@@ -306,8 +288,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Zombie, function (sprite, otherS
             music.smallCrash.playUntilDone()
             otherSprite.vx = 0
             otherSprite.sayText("grr...")
-            heart = sprites.create(assets.image`heart`, SpriteKind.heart)
-            heart.setPosition(otherSprite.x, otherSprite.y)
             otherSprite.destroy(effects.spray, 500)
         }
     }
@@ -367,7 +347,6 @@ function youWin () {
 }
 let lavablock: Sprite = null
 let playerStart: tiles.Location = null
-let heart: Sprite = null
 let diamond: Sprite = null
 let justTeleported = 0
 let FacingRight = 0
@@ -375,7 +354,6 @@ let FacingLeft = 0
 let isAttacking = 0
 let zombieSprite: Sprite = null
 let mySprite: Sprite = null
-let totalLevels = 0
 let currentLevel = 0
 let invincibleTimer = 0
 let invulnerable = 0
@@ -383,10 +361,8 @@ info.setLife(10)
 invulnerable = 0
 invincibleTimer = 1000
 currentLevel = 0
-totalLevels = 4
 nextLevel()
 game.onUpdate(function () {
     scene.cameraFollowSprite(mySprite)
     moveZombie()
-    scroller.scrollBackgroundWithCamera(scroller.CameraScrollMode.OnlyHorizontal)
 })
