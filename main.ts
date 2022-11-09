@@ -56,12 +56,21 @@ function spawnZombies () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `, SpriteKind.Zombie)
-        animation.runImageAnimation(
-        zombieSprite,
-        assets.animation`myAnim2`,
-        500,
-        true
-        )
+        if (currentLevel == 6) {
+            animation.runImageAnimation(
+            zombieSprite,
+            assets.animation`myAnim8`,
+            500,
+            true
+            )
+        } else {
+            animation.runImageAnimation(
+            zombieSprite,
+            assets.animation`myAnim2`,
+            500,
+            true
+            )
+        }
         tiles.placeOnTile(zombieSprite, value)
         if (zombieSprite.tileKindAt(TileDirection.Left, assets.tile`myTile27`)) {
             tiles.setTileAt(value, assets.tile`myTile27`)
@@ -72,6 +81,12 @@ function spawnZombies () {
         zombieSprite.vx = 25
     }
 }
+controller.combos.attachCombo("U+DU", function () {
+    currentLevel += 1
+    info.setScore(currentLevel * 8 - 8)
+    clearLevel()
+    nextLevel()
+})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (isAttacking == 0) {
         isAttacking = 1
@@ -222,23 +237,41 @@ function moveZombie () {
     for (let numOfZombies of sprites.allOfKind(SpriteKind.Zombie)) {
         if (numOfZombies.isHittingTile(CollisionDirection.Left)) {
             numOfZombies.vx = randint(15, 40)
-            animation.runImageAnimation(
-            numOfZombies,
-            assets.animation`myAnim2`,
-            500,
-            true
-            )
+            if (currentLevel == 6) {
+                animation.runImageAnimation(
+                numOfZombies,
+                assets.animation`myAnim8`,
+                500,
+                true
+                )
+            } else {
+                animation.runImageAnimation(
+                numOfZombies,
+                assets.animation`myAnim2`,
+                500,
+                true
+                )
+            }
             if (Math.percentChance(10)) {
                 numOfZombies.sayText("blargh...", 2000, true)
             }
         } else if (numOfZombies.isHittingTile(CollisionDirection.Right)) {
             numOfZombies.vx = randint(-15, -40)
-            animation.runImageAnimation(
-            numOfZombies,
-            assets.animation`myAnim3`,
-            500,
-            true
-            )
+            if (currentLevel == 6) {
+                animation.runImageAnimation(
+                numOfZombies,
+                assets.animation`myAnim9`,
+                500,
+                true
+                )
+            } else {
+                animation.runImageAnimation(
+                numOfZombies,
+                assets.animation`myAnim3`,
+                500,
+                true
+                )
+            }
             if (Math.percentChance(10)) {
                 numOfZombies.sayText("brains...", 2000, true)
             }
@@ -315,6 +348,12 @@ function nextLevel () {
     	
     }
 }
+controller.combos.attachCombo("U+DD", function () {
+    currentLevel += -1
+    info.setScore(currentLevel * 8 - 8)
+    clearLevel()
+    nextLevel()
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
     if (justTeleported == 0) {
         timer.throttle("action", 2000, function () {
