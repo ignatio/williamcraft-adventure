@@ -218,7 +218,7 @@ function moveZombie () {
             numOfZombies,
             assets.animation`myAnim2`,
             500,
-            false
+            true
             )
             if (Math.percentChance(10)) {
                 numOfZombies.sayText("blargh...", 2000, true)
@@ -229,7 +229,7 @@ function moveZombie () {
             numOfZombies,
             assets.animation`myAnim3`,
             500,
-            false
+            true
             )
             if (Math.percentChance(10)) {
                 numOfZombies.sayText("brains...", 2000, true)
