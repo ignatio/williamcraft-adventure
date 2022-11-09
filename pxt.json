@@ -1,6 +1,6 @@
 {
     "name": "Williamcraft Adventure",
-    "version": "1.0.3",
+    "version": "1.0.2",
     "description": "",
     "dependencies": {
         "device": "*",
