@@ -26,7 +26,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`flagRed`, function (sprite, l
         invulnerable = 1
         music.powerUp.play()
         timer.after(5000, function () {
-            if (currentLevel < 6) {
+            if (currentLevel < 4) {
                 currentLevel += 1
                 nextLevel()
             } else {
