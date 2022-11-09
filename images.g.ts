@@ -33,6 +33,7 @@ namespace myImages {
 2 4 4 4 4 4 2 5 1 4 5 4 4 4 4 4 
 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 
 `;
+<<<<<<< HEAD
             case "image3":
             case "myImage1":return img`
 . 2 2 . . 2 2 . 
@@ -186,6 +187,8 @@ namespace myImages {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 `;
+=======
+>>>>>>> parent of 52a0c64 (messing with music)
         }
         return null;
     })
@@ -752,5 +755,15 @@ namespace myImages {
         return null;
     })
 
+<<<<<<< HEAD
+=======
+    helpers._registerFactory("song", function(name: string) {
+        switch(helpers.stringTrim(name)) {
+
+        }
+        return null;
+    })
+
+>>>>>>> parent of 52a0c64 (messing with music)
 }
 // Auto-generated code. Do not edit.

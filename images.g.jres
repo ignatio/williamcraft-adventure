@@ -9,6 +9,7 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "myImage0"
     },
+<<<<<<< HEAD
     "image3": {
         "data": "hwQIAAgAAAAgIQIAEiIiACIiIgIgIiIiICIiIiIiIgIiIiIAICICAA==",
         "mimeType": "image/x-mkcd-f4",
@@ -24,6 +25,8 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "myImage2"
     },
+=======
+>>>>>>> parent of 52a0c64 (messing with music)
     "anim3": {
         "namespace": "myAnimations",
         "id": "anim3",
