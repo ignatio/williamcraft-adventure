@@ -115,8 +115,16 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.heart, function (sprite, otherSp
     otherSprite.vy += -100
     info.changeLifeBy(1)
 })
+scene.onHitWall(SpriteKind.title, function (sprite, location) {
+    titleScreen.setVelocity(0, 0)
+    story.startCutscene(function () {
+        story.setPagePauseLength(999999, 999999)
+        story.printDialog("Press [A] to Start!", 100, 130, 50, 160, 9, 15, story.TextSpeed.VeryFast)
+    })
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (currentLevel == 0) {
+        story.cancelAllCutscenes()
         currentLevel = 1
         sprites.destroyAllSpritesOfKind(SpriteKind.Zombie)
         sprites.destroyAllSpritesOfKind(SpriteKind.diamond)
@@ -260,6 +268,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function nextLevel () {
     if (currentLevel == 0) {
+        showtitle = 0
         titleScreen = sprites.create(assets.image`Title Screen`, SpriteKind.title)
         titleScreen.z = 10
         titleScreen.setVelocity(0, 20)
@@ -387,9 +396,10 @@ function youWin () {
 let lavablock: Sprite = null
 let playerStart: tiles.Location = null
 let heart: Sprite = null
-let titleScreen: Sprite = null
+let showtitle = 0
 let diamond: Sprite = null
 let justTeleported = 0
+let titleScreen: Sprite = null
 let FacingRight = 0
 let FacingLeft = 0
 let isAttacking = 0
