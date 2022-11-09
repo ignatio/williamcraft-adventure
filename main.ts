@@ -81,12 +81,6 @@ function spawnZombies () {
         zombieSprite.vx = 25
     }
 }
-controller.combos.attachCombo("U+DU", function () {
-    currentLevel += 1
-    info.setScore(currentLevel * 8 - 8)
-    clearLevel()
-    nextLevel()
-})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (isAttacking == 0) {
         isAttacking = 1
@@ -157,14 +151,16 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.diamond, function (sprite, other
     info.changeScoreBy(1)
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    FacingRight = 0
-    FacingLeft = 1
-    animation.runImageAnimation(
-    mySprite,
-    assets.animation`myAnim0`,
-    200,
-    true
-    )
+    if (currentLevel > 0) {
+        FacingRight = 0
+        FacingLeft = 1
+        animation.runImageAnimation(
+        mySprite,
+        assets.animation`myAnim0`,
+        200,
+        true
+        )
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
     if (justTeleported == 0) {
@@ -179,41 +175,45 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, l
     }
 })
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
-    FacingRight = 1
-    FacingLeft = 0
-    if (controller.left.isPressed()) {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`myAnim0`,
-        200,
-        true
-        )
-    } else if (isAttacking == 0) {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`myAnim4`,
-        200,
-        true
-        )
+    if (currentLevel > 0) {
+        FacingRight = 1
+        FacingLeft = 0
+        if (controller.left.isPressed()) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`myAnim0`,
+            200,
+            true
+            )
+        } else if (isAttacking == 0) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`myAnim4`,
+            200,
+            true
+            )
+        }
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
-    FacingRight = 0
-    FacingLeft = 1
-    if (controller.right.isPressed()) {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`myAnim1`,
-        200,
-        true
-        )
-    } else if (isAttacking == 0) {
-        animation.runImageAnimation(
-        mySprite,
-        assets.animation`myAnim5`,
-        200,
-        true
-        )
+    if (currentLevel > 0) {
+        FacingRight = 0
+        FacingLeft = 1
+        if (controller.right.isPressed()) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`myAnim1`,
+            200,
+            true
+            )
+        } else if (isAttacking == 0) {
+            animation.runImageAnimation(
+            mySprite,
+            assets.animation`myAnim5`,
+            200,
+            true
+            )
+        }
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.lavablock, function (sprite, otherSprite) {
@@ -290,14 +290,16 @@ function spawnDiamonds () {
     }
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    FacingRight = 1
-    FacingLeft = 0
-    animation.runImageAnimation(
-    mySprite,
-    assets.animation`myAnim1`,
-    200,
-    true
-    )
+    if (currentLevel > 0) {
+        FacingRight = 1
+        FacingLeft = 0
+        animation.runImageAnimation(
+        mySprite,
+        assets.animation`myAnim1`,
+        200,
+        true
+        )
+    }
 })
 function nextLevel () {
     if (currentLevel == 0) {
@@ -348,12 +350,6 @@ function nextLevel () {
     	
     }
 }
-controller.combos.attachCombo("U+DD", function () {
-    currentLevel += -1
-    info.setScore(currentLevel * 8 - 8)
-    clearLevel()
-    nextLevel()
-})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
     if (justTeleported == 0) {
         timer.throttle("action", 2000, function () {
@@ -365,6 +361,12 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
         })
         justTeleported = 0
     }
+})
+controller.combos.attachCombo("DDUU+b", function () {
+    currentLevel += -1
+    info.setScore(currentLevel * 8 - 8)
+    clearLevel()
+    nextLevel()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Zombie, function (sprite, otherSprite) {
     if (invulnerable == 0) {
@@ -383,6 +385,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Zombie, function (sprite, otherS
             otherSprite.destroy(effects.spray, 500)
         }
     }
+})
+controller.combos.attachCombo("DDUD+B", function () {
+    currentLevel += 1
+    info.setScore(currentLevel * 8 - 8)
+    clearLevel()
+    nextLevel()
 })
 function clearLevel () {
     sprites.destroyAllSpritesOfKind(SpriteKind.Zombie)
