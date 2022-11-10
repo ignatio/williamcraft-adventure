@@ -128,7 +128,7 @@ scene.onHitWall(SpriteKind.title, function (sprite, location) {
     titleScreen.setVelocity(0, 0)
     story.startCutscene(function () {
         story.setPagePauseLength(999999, 999999)
-        story.printDialog("Press [A] to Start!", 100, 130, 50, 160, 9, 15, story.TextSpeed.VeryFast)
+        story.printDialog("Press [A] to Start!", 100, 125, 50, 160, 1, 0, story.TextSpeed.VeryFast)
     })
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
