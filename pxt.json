@@ -1,5 +1,5 @@
 {
-    "name": "Williamcraft Adventure",
+    "name": "Williamcraft Adventure BETA",
     "version": "1.0.5",
     "description": "",
     "dependencies": {
@@ -17,13 +17,14 @@
         "images.g.jres",
         "images.g.ts",
         "tilemap.g.jres",
-        "tilemap.g.ts"
+        "tilemap.g.ts",
+        "main.py"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.11.36",
+        "target": "1.12.2",
         "targetId": "arcade"
     },
     "supportedTargets": [
